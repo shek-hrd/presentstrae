@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Pro Studio</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #3498db; }
+        body { margin: 0; font-family: Arial, sans-serif; }
+        .hidden { display: none !important; }
+        #mode-toggle { position: fixed; top: 20px; right: 20px; z-index: 1000; padding: 10px 20px; }
+        
+        /* Viewer Mode Styles */
+        #viewer { height: 100vh; }
+        #viewer-header { background: var(--primary); color: white; padding: 1rem; }
+        .examples-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; padding: 1rem; }
+        .example-item { border: 1px solid #ddd; padding: 1rem; cursor: pointer; transition: transform 0.2s; }
+        .example-item:hover { transform: scale(1.02); }
+        #three-container { width: 100%; height: 70vh; border: 2px solid var(--secondary); }
+
+        /* Admin Mode Styles */
+        #admin-panel { padding: 2rem; background: #f5f6fa; }
+        .form-group { margin-bottom: 1rem; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; }
+        .model-list { max-height: 300px; overflow-y: auto; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+</head>
+<body>
+    <button id="mode-toggle" onclick="toggleMode()">Switch to Admin</button>
+
+    <!-- Viewer Mode -->
+    <div id="viewer">
+        <div id="viewer-header">
+            <h1>3D Pro Studio Portfolio</h1>
+            <p>Interactive 3D experiences for architecture, events, and product visualization</p>
+        </div>
+        
+        <div class="examples-grid">
+            <div class="example-item" data-model="models/apartment.glb" data-type="gltf">
+                <h3>Luxury Apartment Complex</h3>
+                <p>Interactive walkthrough with material options</p>
+            </div>
+            <div class="example-item" data-model="models/concert-stage.fbx" data-type="fbx">
+                <h3>Music Festival Stage Design</h3>
+                <p>360° panorama with dynamic lighting</p>
+            </div>
+            <div class="example-item" data-model="models/podium.obj" data-type="obj">
+                <h3>Conference Podium System</h3>
+                <p>Customizable modular design presentation</p>
+            </div>
+        </div>
+
+        <div id="three-container"></div>
+    </div>
+
+    <!-- Admin Mode -->
+    <div id="admin-panel" class="hidden">
+        <h2>Studio Administration</h2>
+        
+        <div class="form-group">
+            <label>Upload Model:</label>
+            <input type="file" id="model-upload" accept=".gltf,.glb,.fbx,.obj">
+        </div>
+
+        <div class="form-group">
+            <label>Model Properties:</label>
+            <input type="text" id="model-name" placeholder="Model Name">
+            <select id="model-type">
+                <option value="gltf">GLTF/GLB</option>
+                <option value="fbx">FBX</option>
+                <option value="obj">OBJ</option>
+            </select>
+        </div>
+
+        <h3>Scene Management</h3>
+        <div class="model-list">
+            <!-- Dynamically populated model list -->
+        </div>
+    </div>
+
+    <script>
+        let currentScene = null;
+        let isAdminMode = false;
+        let renderer, camera, controls;
+
+        function initThreeJS() {
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, 500);
+            document.getElementById('three-container').appendChild(renderer.domElement);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / 500, 0.1, 1000);
+            camera.position.set(0, 5, 10);
+            
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+        }
+
+        function loadModel(path, type) {
+            if(currentScene) renderer.domElement.removeChild(currentScene);
+
+            const loaders = {
+                gltf: new THREE.GLTFLoader(),
+                fbx: new THREE.FBXLoader(),
+                obj: new THREE.OBJLoader()
+            };
+
+            loaders[type].load(path, (object) => {
+                currentScene = object;
+                const scene = new THREE.Scene();
+                scene.add(object);
+                scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+                animate();
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(currentScene, camera);
+        }
+
+        function toggleMode() {
+            isAdminMode = !isAdminMode;
+            document.getElementById('viewer').classList.toggle('hidden');
+            document.getElementById('admin-panel').classList.toggle('hidden');
+            document.getElementById('mode-toggle').textContent = 
+                isAdminMode ? 'Switch to Viewer' : 'Switch to Admin';
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.example-item').forEach(item => {
+            item.addEventListener('click', () => {
+                loadModel(item.dataset.model, item.dataset.type);
+            });
+        });
+
+        document.getElementById('model-upload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            // Handle file upload logic here (would need backend in real implementation)
+        });
+
+        // Initialize
+        initThreeJS();
+        loadModel('models/apartment.glb', 'gltf'); // Load default model
+    </script>
+</body>
+</html>

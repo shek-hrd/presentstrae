@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Professional Studio</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        header { background-color: #333; color: white; padding: 1em; text-align: center; }
+        nav { margin: 1em 0; }
+        nav button { margin: 0 0.5em; padding: 0.5em 1em; background: #555; color: white; border: none; cursor: pointer; }
+        nav button.active { background: #007bff; }
+        section { padding: 2em; max-width: 1200px; margin: 0 auto; }
+        .viewer-mode { display: block; }
+        .admin-mode { display: none; }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1em; }
+        .project { background: white; padding: 1em; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .project canvas { width: 100%; height: 200px; border: 1px solid #ddd; }
+        form { background: white; padding: 1em; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, select, button { display: block; margin: 0.5em 0; padding: 0.5em; width: 100%; max-width: 300px; }
+        #mode-toggle { position: fixed; top: 1em; right: 1em; z-index: 1000; }
+        .hidden { display: none; }
+        #project-list { margin-top: 1em; }
+        .project-item { border: 1px solid #ddd; padding: 1em; margin: 0.5em 0; border-radius: 4px; }
+        #canvas { width: 100%; height: 400px; border: 1px solid #ccc; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <div id="mode-toggle">
+        <button id="toggle-mode" onclick="toggleMode()">Switch to Admin</button>
+    </div>
+
+    <header>
+        <h1>3D Professional Studio</h1>
+        <p>Creating immersive 3D designs for podia, apartments, concerts, and more. Offering flythroughs, interactive walkthroughs, and 360° static camera panoramas.</p>
+    </header>
+
+    <nav>
+        <button onclick="showSection('home')" class="active">Home</button>
+        <button onclick="showSection('services')">Services</button>
+        <button onclick="showSection('portfolio')">Portfolio</button>
+        <button onclick="showSection('contact')">Contact</button>
+    </nav>
+
+    <!-- Viewer Mode Sections -->
+    <div id="viewer-mode" class="viewer-mode">
+        <section id="home">
+            <h2>Welcome to Our Studio</h2>
+            <p>We specialize in high-quality 3D designs and presentations. Transform your ideas into interactive experiences.</p>
+        </section>
+
+        <section id="services" class="hidden">
+            <h2>Our Services</h2>
+            <ul>
+                <li>3D Design for Podia & Stages</li>
+                <li>Apartment & Interior Walkthroughs</li>
+                <li>Concert Hall Flythroughs</li>
+                <li>Custom 3D Presentations</li>
+                <li>Interactive Walkthroughs</li>
+                <li>Flythrough Animations</li>
+                <li>360° Panoramas</li>
+            </ul>
+        </section>
+
+        <section id="portfolio" class="hidden">
+            <h2>Portfolio Examples</h2>
+            <div id="project-grid" class="project-grid"></div>
+        </section>
+
+        <section id="contact" class="hidden">
+            <h2>Contact Us</h2>
+            <p>Email: info@3dprostudio.com | Phone: +1-234-567-890</p>
+        </section>
+    </div>
+
+    <!-- Admin Mode -->
+    <div id="admin-mode" class="admin-mode">
+        <section>
+            <h2>Administration Panel</h2>
+            <form id="add-project-form">
+                <input type="text" id="project-name" placeholder="Project Name" required>
+                <input type="text" id="project-desc" placeholder="Description" required>
+                <select id="project-type">
+                    <option value="flythrough">Flythrough</option>
+                    <option value="walkthrough">Interactive Walkthrough</option>
+                    <option value="panorama">360° Panorama</option>
+                    <option value="static">Static 3D Model</option>
+                </select>
+                <input type="file" id="model-file" accept=".gltf,.glb,.obj" multiple>
+                <input type="url" id="model-url" placeholder="Or provide URL to 3D file (GLTF/OBJ)">
+                <button type="submit">Add Project</button>
+            </form>
+            <div id="project-list"></div>
+        </section>
+    </div>
+
+    <script>
+        let isAdminMode = false;
+        let projects = JSON.parse(localStorage.getItem('projects')) || [
+            // Sample projects
+            { id: 1, name: 'Modern Apartment Walkthrough', desc: 'Interactive 3D tour of a luxury apartment.', type: 'walkthrough', model: 'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf' },
+            { id: 2, name: 'Concert Hall Flythrough', desc: 'Animated flythrough of a grand concert venue.', type: 'flythrough', model: 'https://threejs.org/examples/models/obj/male02/male02.obj' },
+            { id: 3, name: 'Podium Stage Design', desc: '3D model of a professional podium for events.', type: 'static', model: 'https://threejs.org/examples/models/gltf/Soldier.glb' }
+        ];
+
+        function toggleMode() {
+            isAdminMode = !isAdminMode;
+            document.getElementById('viewer-mode').style.display = isAdminMode ? 'none' : 'block';
+            document.getElementById('admin-mode').style.display = isAdminMode ? 'block' : 'none';
+            document.getElementById('toggle-mode').textContent = isAdminMode ? 'Switch to Viewer' : 'Switch to Admin';
+            if (!isAdminMode) renderPortfolio();
+            else renderAdminProjects();
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('#viewer-mode > section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            // Update nav
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function renderPortfolio() {
+            const grid = document.getElementById('project-grid');
+            grid.innerHTML = '';
+            projects.forEach(project => {
+                const div = document.createElement('div');
+                div.className = 'project';
+                div.innerHTML = `
+                    <h3>${project.name}</h3>
+                    <p>${project.desc}</p>
+                    <p>Type: ${project.type}</p>
+                    <canvas id="canvas-${project.id}"></canvas>
+                `;
+                grid.appendChild(div);
+                load3DModel(`canvas-${project.id}`, project.model);
+            });
+        }
+
+        function load3DModel(canvasId, modelPath) {
+            const canvas = document.getElementById(canvasId);
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(1, 1, 1);
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0x404040));
+
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            camera.position.z = 5;
+
+            let loader;
+            if (modelPath.endsWith('.gltf') || modelPath.endsWith('.glb')) {
+                loader = new THREE.GLTFLoader();
+                loader.load(modelPath, (gltf) => {
+                    scene.add(gltf.scene);
+                    animate();
+                });
+            } else if (modelPath.endsWith('.obj')) {
+                loader = new THREE.OBJLoader();
+                loader.load(modelPath, (obj) => {
+                    scene.add(obj);
+                    animate();
+                });
+            } else {
+                // Fallback: simple cube
+                const geometry = new THREE.BoxGeometry();
+                const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+                const cube = new THREE.Mesh(geometry, material);
+                scene.add(cube);
+                animate();
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = canvas.clientWidth / canvas.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            });
+        }
+
+        function renderAdminProjects() {
+            const list = document.getElementById('project-list');
+            list.innerHTML = '<h3>Existing Projects</h3>';
+            projects.forEach(project => {
+                const div = document.createElement('div');
+                div.className = 'project-item';
+                div.innerHTML = `
+                    <h4>${project.name}</h4>
+                    <p>${project.desc}</p>
+                    <p>Type: ${project.type} | Model: ${project.model}</p>
+                    <button onclick="deleteProject(${project.id})">Delete</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function deleteProject(id) {
+            projects = projects.filter(p => p.id !== id);
+            localStorage.setItem('projects', JSON.stringify(projects));
+            renderAdminProjects();
+        }
+
+        document.getElementById('add-project-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const file = document.getElementById('model-file').files[0];
+            let modelPath = document.getElementById('model-url').value;
+            if (file && !modelPath) {
+                // For demo: Can't upload persistently, so alert or use URL if provided. Simulate with a default.
+                alert('File upload simulated. Use URL for loading in this demo.');
+                modelPath = 'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf'; // Fallback
+            }
+            const newProject = {
+                id: Date.now(),
+                name: document.getElementById('project-name').value,
+                desc: document.getElementById('project-desc').value,
+                type: document.getElementById('project-type').value,
+                model: modelPath || ''
+            };
+            projects.push(newProject);
+            localStorage.setItem('projects', JSON.stringify(projects));
+            renderAdminProjects();
+            document.getElementById('add-project-form').reset();
+            alert('Project added!');
+        });
+
+        // Init
+        showSection('home');
+        renderPortfolio();
+    </script>
+</body>
+</html>
