@@ -5,25 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Professional Studio</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
-        header { background-color: #333; color: white; padding: 1em; text-align: center; }
-        nav { margin: 1em 0; }
-        nav button { margin: 0 0.5em; padding: 0.5em 1em; background: #555; color: white; border: none; cursor: pointer; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f8f9fa; 
+            line-height: 1.6;
+        }
+        header { 
+            background: linear-gradient(135deg, #007bff, #0056b3); 
+            color: white; 
+            padding: 2em 1em; 
+            text-align: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        header h1 { margin: 0; font-size: 2.5em; }
+        header p { margin: 0.5em 0 0; font-size: 1.2em; opacity: 0.9; }
+        nav { 
+            background: white; 
+            padding: 1em; 
+            text-align: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            max-width: 1200px; 
+            margin: 0 auto;
+        }
+        nav button { 
+            margin: 0 0.5em; 
+            padding: 0.8em 1.5em; 
+            background: #6c757d; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            border-radius: 25px; 
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        nav button:hover { background: #5a6268; }
         nav button.active { background: #007bff; }
-        section { padding: 2em; max-width: 1200px; margin: 0 auto; }
+        section { 
+            padding: 3em 2em; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
         .viewer-mode { display: block; }
         .admin-mode { display: none; }
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1em; }
-        .project { background: white; padding: 1em; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .project canvas { width: 100%; height: 200px; border: 1px solid #ddd; }
-        form { background: white; padding: 1em; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        input, select, button { display: block; margin: 0.5em 0; padding: 0.5em; width: 100%; max-width: 300px; }
-        #mode-toggle { position: fixed; top: 1em; right: 1em; z-index: 1000; }
+        .project-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: 2em; 
+            margin-top: 2em;
+        }
+        .project { 
+            background: white; 
+            padding: 1.5em; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .project:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .project h3 { margin: 0 0 0.5em; color: #333; }
+        .project p { margin: 0.5em 0; color: #666; }
+        .project canvas { 
+            width: 100%; 
+            height: 250px; 
+            border-radius: 8px; 
+            border: 1px solid #e9ecef; 
+        }
+        ul { list-style: none; padding: 0; }
+        ul li { padding: 0.5em 0; border-bottom: 1px solid #dee2e6; }
+        ul li:last-child { border-bottom: none; }
+        form { 
+            background: white; 
+            padding: 2em; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            max-width: 600px;
+        }
+        input, select, button { 
+            display: block; 
+            margin: 1em 0; 
+            padding: 0.8em; 
+            width: 100%; 
+            border: 1px solid #ced4da; 
+            border-radius: 6px; 
+            box-sizing: border-box;
+        }
+        button[type="submit"] { background: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        button[type="submit"]:hover { background: #218838; }
+        #mode-toggle { 
+            position: fixed; 
+            top: 1em; 
+            right: 1em; 
+            z-index: 1000; 
+        }
+        #mode-toggle button { 
+            padding: 0.5em 1em; 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 20px; 
+            cursor: pointer;
+        }
         .hidden { display: none; }
-        #project-list { margin-top: 1em; }
-        .project-item { border: 1px solid #ddd; padding: 1em; margin: 0.5em 0; border-radius: 4px; }
-        #canvas { width: 100%; height: 400px; border: 1px solid #ccc; }
+        #project-list { margin-top: 2em; }
+        .project-item { 
+            border: 1px solid #dee2e6; 
+            padding: 1.5em; 
+            margin: 1em 0; 
+            border-radius: 8px; 
+            background: white;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .project-item h4 { margin: 0; color: #333; }
+        .project-item p { margin: 0.5em 0; color: #666; }
+        .project-item button { 
+            background: #dc3545; 
+            color: white; 
+            border: none; 
+            padding: 0.5em 1em; 
+            border-radius: 4px; 
+            cursor: pointer;
+            margin-left: 1em;
+        }
+        #canvas { width: 100%; height: 400px; border: 1px solid #ccc; border-radius: 8px; }
+        footer { background: #333; color: white; text-align: center; padding: 1em; margin-top: 3em; }
+        @media (max-width: 768px) {
+            .project-grid { grid-template-columns: 1fr; }
+            section { padding: 2em 1em; }
+            nav button { margin: 0.25em; padding: 0.6em 1em; }
+        }
     </style>
+    <!-- Three.js and Loaders (using a stable version) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
@@ -36,93 +151,136 @@
 
     <header>
         <h1>3D Professional Studio</h1>
-        <p>Creating immersive 3D designs for podia, apartments, concerts, and more. Offering flythroughs, interactive walkthroughs, and 360° static camera panoramas.</p>
+        <p>Immersive 3D designs for podia, apartments, concerts, and beyond. Expert flythroughs, interactive walkthroughs, and 360° panoramas.</p>
     </header>
 
     <nav>
-        <button onclick="showSection('home')" class="active">Home</button>
-        <button onclick="showSection('services')">Services</button>
-        <button onclick="showSection('portfolio')">Portfolio</button>
-        <button onclick="showSection('contact')">Contact</button>
+        <button id="nav-home" onclick="showSection('home', this)" class="active">Home</button>
+        <button id="nav-services" onclick="showSection('services', this)">Services</button>
+        <button id="nav-portfolio" onclick="showSection('portfolio', this)">Portfolio</button>
+        <button id="nav-contact" onclick="showSection('contact', this)">Contact</button>
     </nav>
 
     <!-- Viewer Mode Sections -->
     <div id="viewer-mode" class="viewer-mode">
         <section id="home">
             <h2>Welcome to Our Studio</h2>
-            <p>We specialize in high-quality 3D designs and presentations. Transform your ideas into interactive experiences.</p>
+            <p>We craft stunning 3D visualizations that bring your visions to life. From architectural walkthroughs to event stage designs, our interactive experiences engage and inspire.</p>
         </section>
 
         <section id="services" class="hidden">
             <h2>Our Services</h2>
             <ul>
-                <li>3D Design for Podia & Stages</li>
-                <li>Apartment & Interior Walkthroughs</li>
-                <li>Concert Hall Flythroughs</li>
-                <li>Custom 3D Presentations</li>
-                <li>Interactive Walkthroughs</li>
-                <li>Flythrough Animations</li>
-                <li>360° Panoramas</li>
+                <li><strong>3D Podia & Stage Design:</strong> Custom podiums and stages for events and presentations.</li>
+                <li><strong>Apartment & Interior Modeling:</strong> Detailed 3D tours of residential spaces with interactive elements.</li>
+                <li><strong>Concert Hall Visualizations:</strong> Flythrough animations of venues, highlighting acoustics and lighting.</li>
+                <li><strong>Custom 3D Presentations:</strong> Tailored designs for any project, including product mockups and environments.</li>
+                <li><strong>Interactive Walkthroughs:</strong> User-controlled navigation through virtual spaces.</li>
+                <li><strong>Flythrough Animations:</strong> Cinematic camera paths for dynamic storytelling.</li>
+                <li><strong>360° Static Panoramas:</strong> Immersive spherical views for quick overviews.</li>
             </ul>
         </section>
 
         <section id="portfolio" class="hidden">
             <h2>Portfolio Examples</h2>
+            <p>Explore our recent 3D projects. Click and drag to interact with the models.</p>
             <div id="project-grid" class="project-grid"></div>
         </section>
 
         <section id="contact" class="hidden">
             <h2>Contact Us</h2>
-            <p>Email: info@3dprostudio.com | Phone: +1-234-567-890</p>
+            <p>Get in touch for a free consultation on your 3D project needs.</p>
+            <p><strong>Email:</strong> info@3dprostudio.com</p>
+            <p><strong>Phone:</strong> +1-234-567-890</p>
+            <p><strong>Address:</strong> 123 Design Street, Virtual City, VC 12345</p>
         </section>
     </div>
 
     <!-- Admin Mode -->
     <div id="admin-mode" class="admin-mode">
-        <section>
+        <section style="max-width: 800px; margin: 2em auto;">
             <h2>Administration Panel</h2>
+            <p>Manage your 3D projects. Add new ones via URL (for GLTF/GLB/OBJ files) or simulate file upload. Data is stored locally in your browser.</p>
             <form id="add-project-form">
-                <input type="text" id="project-name" placeholder="Project Name" required>
-                <input type="text" id="project-desc" placeholder="Description" required>
+                <input type="text" id="project-name" placeholder="Project Name (e.g., Luxury Apartment Tour)" required>
+                <input type="text" id="project-desc" placeholder="Description (e.g., Interactive walkthrough of a modern apartment)" required>
                 <select id="project-type">
-                    <option value="flythrough">Flythrough</option>
+                    <option value="flythrough">Flythrough Animation</option>
                     <option value="walkthrough">Interactive Walkthrough</option>
                     <option value="panorama">360° Panorama</option>
                     <option value="static">Static 3D Model</option>
                 </select>
-                <input type="file" id="model-file" accept=".gltf,.glb,.obj" multiple>
-                <input type="url" id="model-url" placeholder="Or provide URL to 3D file (GLTF/OBJ)">
+                <input type="url" id="model-url" placeholder="URL to 3D Model (e.g., https://example.com/model.gltf)" required>
+                <input type="file" id="model-file" accept=".gltf,.glb,.obj" style="margin-bottom: 1em;">
+                <p style="font-size: 0.9em; color: #666;">Note: File uploads are simulated in this demo (no server). Use URL for actual loading. Falls back to sample models if invalid.</p>
                 <button type="submit">Add Project</button>
             </form>
             <div id="project-list"></div>
         </section>
     </div>
 
+    <footer>
+        <p>&copy; 2023 3D Professional Studio. All rights reserved.</p>
+    </footer>
+
     <script>
         let isAdminMode = false;
         let projects = JSON.parse(localStorage.getItem('projects')) || [
-            // Sample projects
-            { id: 1, name: 'Modern Apartment Walkthrough', desc: 'Interactive 3D tour of a luxury apartment.', type: 'walkthrough', model: 'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf' },
-            { id: 2, name: 'Concert Hall Flythrough', desc: 'Animated flythrough of a grand concert venue.', type: 'flythrough', model: 'https://threejs.org/examples/models/obj/male02/male02.obj' },
-            { id: 3, name: 'Podium Stage Design', desc: '3D model of a professional podium for events.', type: 'static', model: 'https://threejs.org/examples/models/gltf/Soldier.glb' }
+            // Refined sample projects with appropriate public models from Three.js examples
+            { 
+                id: 1, 
+                name: 'Modern Apartment Walkthrough', 
+                desc: 'Interactive 3D tour of a luxury apartment interior with walkthrough controls.', 
+                type: 'walkthrough', 
+                model: 'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf' 
+                // Using DamagedHelmet as a placeholder for interior object; in production, use custom apartment model
+            },
+            { 
+                id: 2, 
+                name: 'Concert Hall Flythrough', 
+                desc: 'Animated flythrough of a grand concert venue stage and seating.', 
+                type: 'flythrough', 
+                model: 'https://threejs.org/examples/models/obj/male02/male02.obj' 
+                // Using male02.obj as placeholder for stage performer; enhance with scene in production
+            },
+            { 
+                id: 3, 
+                name: 'Podium Stage Design', 
+                desc: 'Static 3D model of a professional podium for events and speeches.', 
+                type: 'static', 
+                model: 'https://threejs.org/examples/models/gltf/Soldier.glb' 
+                // Using Soldier.glb as placeholder for podium figure; replace with actual stage model
+            },
+            // Additional example for variety
+            { 
+                id: 4, 
+                name: '360° Concert Panorama', 
+                desc: 'Immersive 360° view of a live concert setup.', 
+                type: 'panorama', 
+                model: 'https://threejs.org/examples/textures/equirectangular/venice_sunset_1k.hdr' // Placeholder HDR for panorama (requires custom loader extension)
+            }
         ];
 
         function toggleMode() {
             isAdminMode = !isAdminMode;
             document.getElementById('viewer-mode').style.display = isAdminMode ? 'none' : 'block';
             document.getElementById('admin-mode').style.display = isAdminMode ? 'block' : 'none';
-            document.getElementById('toggle-mode').textContent = isAdminMode ? 'Switch to Viewer' : 'Switch to Admin';
-            if (!isAdminMode) renderPortfolio();
-            else renderAdminProjects();
+            const btn = document.getElementById('toggle-mode');
+            btn.textContent = isAdminMode ? 'Switch to Viewer Mode' : 'Switch to Admin Mode';
+            if (!isAdminMode) {
+                renderPortfolio();
+            } else {
+                renderAdminProjects();
+            }
         }
 
-        function showSection(sectionId) {
+        function showSection(sectionId, btn) {
             // Hide all sections
             document.querySelectorAll('#viewer-mode > section').forEach(s => s.classList.add('hidden'));
             document.getElementById(sectionId).classList.remove('hidden');
-            // Update nav
+            // Update nav active state
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            btn.classList.add('active');
         }
 
         function renderPortfolio() {
@@ -134,75 +292,149 @@
                 div.innerHTML = `
                     <h3>${project.name}</h3>
                     <p>${project.desc}</p>
-                    <p>Type: ${project.type}</p>
+                    <p><strong>Type:</strong> ${project.type.replace(/^\w/, c => c.toUpperCase())}</p>
                     <canvas id="canvas-${project.id}"></canvas>
                 `;
                 grid.appendChild(div);
-                load3DModel(`canvas-${project.id}`, project.model);
+                load3DModel(`canvas-${project.id}`, project.model, project.type);
             });
         }
 
-        function load3DModel(canvasId, modelPath) {
+        function load3DModel(canvasId, modelPath, type = 'static') {
             const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
             const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f0f0);
             const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
             renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-            const light = new THREE.DirectionalLight(0xffffff, 1);
-            light.position.set(1, 1, 1);
-            scene.add(light);
-            scene.add(new THREE.AmbientLight(0x404040));
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 10, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
 
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            camera.position.z = 5;
+            controls.enableDamping = true;
+            camera.position.set(0, 2, 5);
 
-            let loader;
-            if (modelPath.endsWith('.gltf') || modelPath.endsWith('.glb')) {
-                loader = new THREE.GLTFLoader();
-                loader.load(modelPath, (gltf) => {
-                    scene.add(gltf.scene);
-                    animate();
+            let loadedObject = null;
+            let isPanorama = type === 'panorama';
+
+            if (isPanorama) {
+                // Simple panorama fallback: Create a skybox with a color gradient (extend with texture loader in production)
+                const geometry = new THREE.SphereGeometry(50, 32, 32);
+                const material = new THREE.MeshBasicMaterial({ 
+                    color: 0x87CEEB, 
+                    side: THREE.BackSide 
                 });
-            } else if (modelPath.endsWith('.obj')) {
-                loader = new THREE.OBJLoader();
-                loader.load(modelPath, (obj) => {
-                    scene.add(obj);
-                    animate();
-                });
+                loadedObject = new THREE.Mesh(geometry, material);
+                scene.add(loadedObject);
+                controls.target.set(0, 0, 0);
             } else {
-                // Fallback: simple cube
-                const geometry = new THREE.BoxGeometry();
-                const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-                const cube = new THREE.Mesh(geometry, material);
-                scene.add(cube);
+                // Load model based on format
+                let loader;
+                const ext = modelPath.split('.').pop().toLowerCase();
+                if (['gltf', 'glb'].includes(ext)) {
+                    loader = new THREE.GLTFLoader();
+                    loader.load(modelPath, (gltf) => {
+                        loadedObject = gltf.scene;
+                        loadedObject.scale.set(2, 2, 2); // Scale for visibility
+                        scene.add(loadedObject);
+                        animate();
+                    }, undefined, (error) => {
+                        console.error('Load error:', error);
+                        fallbackObject(scene);
+                    });
+                } else if (ext === 'obj') {
+                    loader = new THREE.OBJLoader();
+                    loader.load(modelPath, (obj) => {
+                        loadedObject = obj;
+                        scene.add(loadedObject);
+                        animate();
+                    }, undefined, (error) => {
+                        console.error('Load error:', error);
+                        fallbackObject(scene);
+                    });
+                } else if (modelPath.includes('hdr')) {
+                    // For HDR panorama fallback
+                    fallbackObject(scene);
+                } else {
+                    fallbackObject(scene);
+                }
+            }
+
+            function fallbackObject(scene) {
+                // Fallback: Type-specific simple geometry
+                let geometry, material;
+                if (type === 'static' || type === 'walkthrough') {
+                    geometry = new THREE.BoxGeometry(2, 1, 2);
+                    material = new THREE.MeshLambertMaterial({ color: 0x8B4513 }); // Podium-like
+                } else if (type === 'flythrough') {
+                    geometry = new THREE.CylinderGeometry(0.5, 1, 3, 8);
+                    material = new THREE.MeshLambertMaterial({ color: 0xFF4500 }); // Stage light-like
+                } else {
+                    geometry = new THREE.SphereGeometry(1, 16, 16);
+                    material = new THREE.MeshLambertMaterial({ color: 0x4169E1 }); // Concert sphere
+                }
+                loadedObject = new THREE.Mesh(geometry, material);
+                loadedObject.position.y = 0.5;
+                loadedObject.castShadow = true;
+                loadedObject.receiveShadow = true;
+                scene.add(loadedObject);
                 animate();
             }
 
+            // Type-specific enhancements (basic)
+            let animationId;
             function animate() {
-                requestAnimationFrame(animate);
+                animationId = requestAnimationFrame(animate);
                 controls.update();
+
+                if (loadedObject && type === 'flythrough') {
+                    // Simple rotation for flythrough simulation
+                    loadedObject.rotation.y += 0.01;
+                }
+
                 renderer.render(scene, camera);
             }
 
+            function stopAnimate() {
+                cancelAnimationFrame(animationId);
+            }
+
             // Resize handler
-            window.addEventListener('resize', () => {
+            const resizeObserver = new ResizeObserver(() => {
+                if (canvas.clientWidth === 0 || canvas.clientHeight === 0) return;
                 camera.aspect = canvas.clientWidth / canvas.clientHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
             });
+            resizeObserver.observe(canvas);
         }
 
         function renderAdminProjects() {
             const list = document.getElementById('project-list');
             list.innerHTML = '<h3>Existing Projects</h3>';
+            if (projects.length === 0) {
+                list.innerHTML += '<p>No projects yet. Add one above!</p>';
+                return;
+            }
             projects.forEach(project => {
                 const div = document.createElement('div');
                 div.className = 'project-item';
                 div.innerHTML = `
-                    <h4>${project.name}</h4>
-                    <p>${project.desc}</p>
-                    <p>Type: ${project.type} | Model: ${project.model}</p>
+                    <div style="flex: 1;">
+                        <h4>${project.name}</h4>
+                        <p>${project.desc}</p>
+                        <p><strong>Type:</strong> ${project.type} | <strong>Model:</strong> ${project.model}</p>
+                    </div>
                     <button onclick="deleteProject(${project.id})">Delete</button>
                 `;
                 list.appendChild(div);
@@ -210,37 +442,45 @@
         }
 
         function deleteProject(id) {
-            projects = projects.filter(p => p.id !== id);
-            localStorage.setItem('projects', JSON.stringify(projects));
-            renderAdminProjects();
+            if (confirm('Delete this project?')) {
+                projects = projects.filter(p => p.id !== id);
+                localStorage.setItem('projects', JSON.stringify(projects));
+                renderAdminProjects();
+                if (!isAdminMode) renderPortfolio();
+            }
         }
 
         document.getElementById('add-project-form').addEventListener('submit', (e) => {
             e.preventDefault();
+            const url = document.getElementById('model-url').value;
             const file = document.getElementById('model-file').files[0];
-            let modelPath = document.getElementById('model-url').value;
-            if (file && !modelPath) {
-                // For demo: Can't upload persistently, so alert or use URL if provided. Simulate with a default.
-                alert('File upload simulated. Use URL for loading in this demo.');
-                modelPath = 'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf'; // Fallback
+            let modelPath = url || '';
+            if (file && !url) {
+                // Simulate upload: In production, upload to server and get URL. For demo, use a fallback sample
+                alert('File selected but not uploaded (demo mode). Using sample model URL for preview. Provide a URL for custom loads.');
+                modelPath = 'https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf';
+            } else if (!modelPath) {
+                alert('Please provide a model URL or select a file.');
+                return;
             }
             const newProject = {
                 id: Date.now(),
                 name: document.getElementById('project-name').value,
                 desc: document.getElementById('project-desc').value,
                 type: document.getElementById('project-type').value,
-                model: modelPath || ''
+                model: modelPath
             };
             projects.push(newProject);
             localStorage.setItem('projects', JSON.stringify(projects));
-            renderAdminProjects();
             document.getElementById('add-project-form').reset();
-            alert('Project added!');
+            renderAdminProjects();
+            if (!isAdminMode) renderPortfolio(); // Refresh portfolio if switched
+            alert('Project added successfully! View it in Portfolio mode.');
         });
 
-        // Init
-        showSection('home');
-        renderPortfolio();
+        // Initialization
+        showSection('home', document.getElementById('nav-home'));
+        renderPortfolio(); // Load initial portfolio
     </script>
 </body>
 </html>
