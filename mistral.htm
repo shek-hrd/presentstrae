@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Professional Studio</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --text-color: #333;
+            --text-light: #fff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #c0392b;
+        }
+
+        .services {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background-color: var(--text-light);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .service-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .service-content {
+            padding: 20px;
+        }
+
+        .service-content h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .portfolio {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+        }
+
+        .portfolio-slider {
+            position: relative;
+            max-width: 100%;
+            overflow: hidden;
+            margin-top: 30px;
+        }
+
+        .portfolio-slide {
+            display: none;
+            width: 100%;
+        }
+
+        .portfolio-slide.active {
+            display: block;
+        }
+
+        .portfolio-img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .slide-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .slide-nav button {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .slide-nav button.active {
+            background-color: var(--accent-color);
+        }
+
+        .form-container {
+            padding: 80px 0;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--text-light);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .admin-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: var(--text-light);
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 1001;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-close {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .admin-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .admin-section {
+            background-color: var(--dark-color);
+            padding: 20px;
+            border-radius: 5px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .admin-section h3 {
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--light-color);
+            padding-bottom: 10px;
+        }
+
+        .admin-form-group {
+            margin-bottom: 15px;
+        }
+
+        .admin-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .admin-form-group input,
+        .admin-form-group select,
+        .admin-form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: var(--text-light);
+        }
+
+        .admin-form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .admin-btn {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .admin-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .threejs-container {
+            width: 100%;
+            height: 500px;
+            margin-top: 30px;
+            background-color: #f0f0f0;
+        }
+
+        .model-preview {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            margin-top: 20px;
+            border: 1px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+        }
+
+        .model-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .model-item {
+            background-color: var(--dark-color);
+            padding: 10px;
+            border-radius: 5px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .model-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .model-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .model-actions button {
+            flex: 1;
+            padding: 5px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+
+            nav ul {
+                margin-top: 20px;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">3D Professional Studio</div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container hero-content">
+            <h1>Transforming Spaces with 3D Design</h1>
+            <p>We create stunning 3D visualizations for your projects with cutting-edge technology and artistic expertise.</p>
+            <a href="#contact" class="btn">Get a Quote</a>
+        </div>
+    </section>
+
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                    <div class="service-content">
+                        <h3>Podium Design</h3>
+                        <p>We create detailed 3D models of podiums for events, conferences, and presentations. Our designs can include custom shapes, lighting, and branding elements.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                    <div class="service-content">
+                        <h3>Apartment Design</h3>
+                        <p>Our team specializes in creating realistic 3D models of apartments and residential spaces. We can design everything from single units to entire buildings.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1582213783443-f0115111a89e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                    <div class="service-content">
+                        <h3>Concert Venues</h3>
+                        <p>We design 3D models of concert venues including stages, seating arrangements, and lighting setups. Our visualizations help event planners visualize the space before construction.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                    <div class="service-content">
+                        <h3>Interactive Walkthroughs</h3>
+                        <p>Experience your space before it's built with our interactive walkthroughs. Navigate through your 3D model and get a true sense of the space.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                    <div class="service-content">
+                        <h3>360° Panoramas</h3>
+                        <p>We create static 360° panoramas that allow viewers to look around a space in all directions. Perfect for virtual tours and online presentations.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1522542550221-31fd19575a2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                    <div class="service-content">
+                        <h3>Custom 3D Design</h3>
+                        <p>Need something specific? We can create custom 3D designs for any type of project. From architectural visualizations to product designs, we've got you covered.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2 class="section-title">Our Portfolio</h2>
+            <div class="portfolio-slider">
+                <div class="portfolio-slide active">
+                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Podium Design" class="portfolio-img">
+                </div>
+                <div class="portfolio-slide">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Apartment Design" class="portfolio-img">
+                </div>
+                <div class="portfolio-slide">
+                    <img src="https://images.unsplash.com/photo-1582213783443-f0115111a89e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Concert Venue" class="portfolio-img">
+                </div>
+            </div>
+            <div class="slide-nav">
+                <button class="active" data-slide="0"></button>
+                <button data-slide="1"></button>
+                <button data-slide="2"></button>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="form-container">
+        <div class="container">
+            <h2 class="form-title">Contact Us</h2>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="service">Service</label>
+                    <select id="service" name="service">
+                        <option value="">Select a service</option>
+                        <option value="podium">Podium Design</option>
+                        <option value="apartment">Apartment Design</option>
+                        <option value="concert">Concert Venue Design</option>
+                        <option value="walkthrough">Interactive Walkthrough</option>
+                        <option value="panorama">360° Panorama</option>
+                        <option value="custom">Custom 3D Design</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="details">Project Details</label>
+                    <textarea id="details" name="details" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="file">Upload Reference Files (Optional)</label>
+                    <input type="file" id="file" name="file" accept=".obj,.fbx,.stl,.glb,.glTF">
+                </div>
+                <button type="submit" class="btn">Submit Request</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 3D Professional Studio. All rights reserved.</p>
+            <p>Transforming ideas into stunning 3D visualizations.</p>
+        </div>
+    </footer>
+
+    <button class="admin-toggle">Admin Panel</button>
+
+    <div class="admin-panel">
+        <div class="admin-header">
+            <h2>Admin Panel</h2>
+            <button class="admin-close">Close</button>
+        </div>
+        <div class="admin-content">
+            <div class="admin-section">
+                <h3>Manage Projects</h3>
+                <div class="admin-form-group">
+                    <label for="project-name">Project Name</label>
+                    <input type="text" id="project-name" placeholder="Enter project name">
+                </div>
+                <div class="admin-form-group">
+                    <label for="project-type">Project Type</label>
+                    <select id="project-type">
+                        <option value="">Select type</option>
+                        <option value="podium">Podium Design</option>
+                        <option value="apartment">Apartment Design</option>
+                        <option value="concert">Concert Venue Design</option>
+                        <option value="walkthrough">Interactive Walkthrough</option>
+                        <option value="panorama">360° Panorama</option>
+                        <option value="custom">Custom 3D Design</option>
+                    </select>
+                </div>
+                <div class="admin-form-group">
+                    <label for="project-file">Upload 3D Model</label>
+                    <input type="file" id="project-file" accept=".obj,.fbx,.stl,.glb,.glTF">
+                </div>
+                <div class="admin-form-group">
+                    <label for="project-description">Description</label>
+                    <textarea id="project-description" placeholder="Enter project description"></textarea>
+                </div>
+                <button class="admin-btn">Add Project</button>
+            </div>
+
+            <div class="admin-section">
+                <h3>3D Model Preview</h3>
+                <div class="threejs-container" id="threejs-container">
+                    <!-- 3D model will be rendered here -->
+                </div>
+                <div class="model-preview" id="model-preview">
+                    No model loaded
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>Manage Portfolio</h3>
+                <div class="model-list" id="model-list">
+                    <!-- Model items will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Portfolio slider functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.portfolio-slide');
+            const navButtons = document.querySelectorAll('.slide-nav button');
+
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === index);
+                });
+
+                navButtons.forEach((button, i) => {
+                    button.classList.toggle('active', i === index);
+                });
+
+                currentSlide = index;
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const slideIndex = parseInt(button.getAttribute('data-slide'));
+                    showSlide(slideIndex);
+                });
+            });
+
+            // Auto-advance slides
+            setInterval(() => {
+                const nextSlide = (currentSlide + 1) % slides.length;
+                showSlide(nextSlide);
+            }, 5000);
+        });
+
+        // Admin panel toggle
+        const adminToggle = document.querySelector('.admin-toggle');
+        const adminPanel = document.querySelector('.admin-panel');
+        const adminClose = document.querySelector('.admin-close');
+
+        adminToggle.addEventListener('click', () => {
+            adminPanel.style.display = 'block';
+        });
+
+        adminClose.addEventListener('click', () => {
+            adminPanel.style.display = 'none';
+        });
+
+        // 3D Model Preview (simplified for this example)
+        const threejsContainer = document.getElementById('threejs-container');
+        const modelPreview = document.getElementById('model-preview');
+        const projectFileInput = document.getElementById('project-file');
+        const modelList = document.getElementById('model-list');
+
+        // Sample models data
+        const sampleModels = [
+            {
+                id: 1,
+                name: "Modern Podium Design",
+                type: "podium",
+                thumbnail: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                file: "modern_podium.glb"
+            },
+            {
+                id: 2,
+                name: "Luxury Apartment",
+                type: "apartment",
+                thumbnail: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                file: "luxury_apartment.glb"
+            },
+            {
+                id: 3,
+                name: "Concert Stage",
+                type: "concert",
+                thumbnail: "https://images.unsplash.com/photo-1582213783443-f0115111a89e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                file: "concert_stage.glb"
+            }
+        ];
+
+        // Populate model list
+        function populateModelList() {
+            modelList.innerHTML = '';
+            sampleModels.forEach(model => {
+                const modelItem = document.createElement('div');
+                modelItem.className = 'model-item';
+                modelItem.innerHTML = `
+                    <img src="${model.thumbnail}" alt="${model.name}">
+                    <h4>${model.name}</h4>
+                    <p>Type: ${model.type}</p>
+                    <div class="model-actions">
+                        <button onclick="previewModel('${model.file}')">Preview</button>
+                        <button onclick="editModel(${model.id})">Edit</button>
+                        <button onclick="deleteModel(${model.id})">Delete</button>
+                    </div>
+                `;
+                modelList.appendChild(modelItem);
+            });
+        }
+
+        // Preview a model
+        window.previewModel = function(file) {
+            modelPreview.innerHTML = `<p>Previewing: ${file}</p>`;
+            // In a real implementation, you would load the 3D model here
+            threejsContainer.innerHTML = '<p>3D Model Viewer would display the model here</p>';
+        };
+
+        // Edit a model (placeholder function)
+        window.editModel = function(id) {
+            alert(`Edit model with ID: ${id}`);
+        };
+
+        // Delete a model (placeholder function)
+        window.deleteModel = function(id) {
+            if (confirm('Are you sure you want to delete this model?')) {
+                alert(`Model with ID ${id} would be deleted`);
+                // In a real implementation, you would remove the model from the database
+                // and refresh the model list
+            }
+        };
+
+        // Handle file upload
+        projectFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                modelPreview.innerHTML = `<p>Selected file: ${file.name}</p>`;
+                // In a real implementation, you would parse the 3D file and display it
+                threejsContainer.innerHTML = '<p>3D Model Viewer would display the uploaded model here</p>';
+            }
+        });
+
+        // Initialize the model list
+        populateModelList();
+
+        // In a real implementation, you would use Three.js to render 3D models
+        // Here's a simplified placeholder for the 3D viewer
+        function initThreeJS() {
+            // This would be the actual Three.js initialization code
+            // For this example, we'll just show a placeholder
+            threejsContainer.innerHTML = `
+                <p>3D Model Viewer</p>
+                <p>Note: In a real implementation, this would display interactive 3D models.</p>
+                <p>Supported formats: OBJ, FBX, STL, glTF/GLB</p>
+            `;
+        }
+
+        // Initialize the 3D viewer
+        initThreeJS();
+    </script>
+</body>
+</html>
