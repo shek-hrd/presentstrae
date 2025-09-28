@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Professional Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -11,6 +12,7 @@
             --accent-color: #e74c3c;
             --light-color: #ecf0f1;
             --dark-color: #34495e;
+            --success-color: #2ecc71;
         }
         
         * {
@@ -24,6 +26,12 @@
             background-color: #f5f7fa;
             color: #333;
             line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+        
+        body.viewer-mode {
+            background-color: #1a1a1a;
+            color: #fff;
         }
         
         header {
@@ -39,9 +47,20 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
+        .viewer-mode header {
+            background-color: #111;
+        }
+        
         .logo {
             font-size: 1.8rem;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--secondary-color);
         }
         
         nav ul {
@@ -57,6 +76,7 @@
             color: white;
             text-decoration: none;
             transition: color 0.3s;
+            font-weight: 500;
         }
         
         nav ul li a:hover {
@@ -67,14 +87,25 @@
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.7rem 1.2rem;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .view-toggle i {
+            margin-right: 8px;
         }
         
         .view-toggle:hover {
             background-color: #2980b9;
+        }
+        
+        .viewer-mode .view-toggle {
+            background-color: var(--accent-color);
         }
         
         .hero {
@@ -83,6 +114,10 @@
             color: white;
             text-align: center;
             padding: 5rem 2rem;
+        }
+        
+        .viewer-mode .hero {
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000"/><path d="M0,0L100,100" stroke="%23e74c3c" stroke-width="2"/><path d="M100,0L0,100" stroke="%23e74c3c" stroke-width="2"/></svg>');
         }
         
         .hero h1 {
@@ -104,11 +139,18 @@
             border-radius: 4px;
             text-decoration: none;
             font-weight: bold;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
         }
         
         .btn:hover {
             background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .viewer-mode .btn {
+            background-color: var(--accent-color);
         }
         
         .container {
@@ -121,6 +163,27 @@
             text-align: center;
             margin-bottom: 3rem;
             color: var(--primary-color);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .viewer-mode .section-title {
+            color: #fff;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary-color);
+        }
+        
+        .viewer-mode .section-title:after {
+            background-color: var(--accent-color);
         }
         
         .services {
@@ -138,6 +201,10 @@
             transition: transform 0.3s;
         }
         
+        .viewer-mode .service-card {
+            background-color: #2a2a2a;
+        }
+        
         .service-card:hover {
             transform: translateY(-5px);
         }
@@ -150,15 +217,29 @@
             justify-content: center;
             color: white;
             font-weight: bold;
+            font-size: 2rem;
         }
         
         .service-content {
             padding: 1.5rem;
         }
         
+        .service-content h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .viewer-mode .service-content h3 {
+            color: #fff;
+        }
+        
         .examples {
             background-color: var(--light-color);
             padding: 4rem 0;
+        }
+        
+        .viewer-mode .examples {
+            background-color: #252525;
         }
         
         .example-gallery {
@@ -172,6 +253,15 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .viewer-mode .example-item {
+            background-color: #2a2a2a;
+        }
+        
+        .example-item:hover {
+            transform: translateY(-5px);
         }
         
         .example-img {
@@ -181,10 +271,32 @@
             align-items: center;
             justify-content: center;
             color: white;
+            font-size: 1.5rem;
+            position: relative;
+        }
+        
+        .example-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
         }
         
         .example-content {
             padding: 1.5rem;
+        }
+        
+        .example-content h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .viewer-mode .example-content h3 {
+            color: #fff;
         }
         
         .admin-panel {
@@ -195,6 +307,10 @@
             margin-bottom: 4rem;
         }
         
+        .viewer-mode .admin-panel {
+            background-color: #2a2a2a;
+        }
+        
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -202,6 +318,10 @@
             margin-bottom: 2rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid #eee;
+        }
+        
+        .viewer-mode .admin-header {
+            border-bottom: 1px solid #444;
         }
         
         .admin-forms {
@@ -218,6 +338,11 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .viewer-mode .form-group label {
+            color: #fff;
         }
         
         .form-group input,
@@ -227,10 +352,28 @@
             padding: 0.8rem;
             border: 1px solid #ddd;
             border-radius: 4px;
+            background-color: white;
+        }
+        
+        .viewer-mode .form-group input,
+        .viewer-mode .form-group select,
+        .viewer-mode .form-group textarea {
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
         }
         
         .form-group textarea {
             min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-actions {
+            grid-column: span 2;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
         }
         
         .viewer-mode {
@@ -247,6 +390,11 @@
             justify-content: center;
             color: white;
             position: relative;
+            overflow: hidden;
+        }
+        
+        .viewer-mode .viewer-container {
+            background-color: #111;
         }
         
         .viewer-controls {
@@ -260,9 +408,67 @@
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 4px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .viewer-controls button i {
+            margin-right: 8px;
+        }
+        
+        .viewer-controls button:hover {
+            background-color: #2980b9;
+        }
+        
+        .viewer-mode .viewer-controls button {
+            background-color: var(--accent-color);
+        }
+        
+        .viewer-mode .viewer-controls button:hover {
+            background-color: #c0392b;
+        }
+        
+        .file-upload {
+            border: 2px dashed #ddd;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            background-color: #f9f9f9;
+        }
+        
+        .viewer-mode .file-upload {
+            border-color: #555;
+            background-color: #2a2a2a;
+        }
+        
+        .file-upload p {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        
+        .viewer-mode .file-upload p {
+            color: #aaa;
+        }
+        
+        .format-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .format-badge {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
         }
         
         footer {
@@ -271,6 +477,102 @@
             text-align: center;
             padding: 2rem;
             margin-top: 4rem;
+        }
+        
+        .viewer-mode footer {
+            background-color: #111;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        .footer-section p, .footer-section a {
+            margin-bottom: 0.5rem;
+            display: block;
+            color: #ddd;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #444;
+            text-align: center;
+        }
+        
+        /* 3D Viewer Simulation */
+        .viewer-simulation {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        
+        .cube {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg);
+            animation: rotate 20s infinite linear;
+        }
+        
+        .cube-face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(52, 152, 219, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .viewer-mode .cube-face {
+            background: rgba(231, 76, 60, 0.8);
+        }
+        
+        .front  { transform: translateZ(50px); }
+        .back   { transform: translateZ(-50px) rotateY(180deg); }
+        .right  { transform: translateX(50px) rotateY(90deg); }
+        .left   { transform: translateX(-50px) rotateY(-90deg); }
+        .top    { transform: translateY(-50px) rotateX(90deg); }
+        .bottom { transform: translateY(50px) rotateX(-90deg); }
+        
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg); }
+            to { transform: translate(-50%, -50%) rotateX(360deg) rotateY(360deg); }
         }
         
         /* Responsive adjustments */
@@ -286,23 +588,285 @@
             .hero h1 {
                 font-size: 2rem;
             }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-section h3:after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo">3D Professional Studio</div>
+        <div class="logo"><i class="fas fa-cube"></i>3D Professional Studio</div>
         <nav>
             <ul>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#examples">Examples</a></li>
                 <li><a href="#admin">Admin</a></li>
+                <li><a href="#viewer">Viewer</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
-        <button class="view-toggle" id="viewToggle">Switch to Viewer Mode</button>
+        <button class="view-toggle" id="viewToggle"><i class="fas fa-eye"></i>Switch to Viewer Mode</button>
     </header>
 
     <section class="hero">
         <h1>Transform Your Vision into Immersive 3D Experiences</h1>
-        <p>
+        <p>We create stunning 3D designs for podiums, apartments, concerts, and more. Featuring flythroughs, interactive walkthroughs, and 360° panoramas.</p>
+        <a href="#contact" class="btn">Get Started <i class="fas fa-arrow-right"></i></a>
+    </section>
+
+    <section id="services" class="container">
+        <h2 class="section-title">Our Services</h2>
+        <div class="services">
+            <div class="service-card">
+                <div class="service-img"><i class="fas fa-building"></i></div>
+                <div class="service-content">
+                    <h3>Architectural Visualization</h3>
+                    <p>Create realistic 3D models of buildings, interiors, and exteriors with detailed textures and lighting.</p>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-img"><i class="fas fa-video"></i></div>
+                <div class="service-content">
+                    <h3>Flythrough Animations</h3>
+                    <p>Dynamic camera movements that take your audience on a guided tour through your 3D space.</p>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-img"><i class="fas fa-street-view"></i></div>
+                <div class="service-content">
+                    <h3>Interactive Walkthroughs</h3>
+                    <p>Allow users to navigate your 3D environment in real-time with first-person controls.</p>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-img"><i class="fas fa-globe"></i></div>
+                <div class="service-content">
+                    <h3>360° Panoramas</h3>
+                    <p>Immersive static camera experiences that allow viewers to look around in every direction.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="examples" class="examples">
+        <div class="container">
+            <h2 class="section-title">Project Examples</h2>
+            <div class="example-gallery">
+                <div class="example-item">
+                    <div class="example-img">
+                        <i class="fas fa-microphone"></i>
+                        <span class="example-badge">Concert</span>
+                    </div>
+                    <div class="example-content">
+                        <h3>Music Festival Stage Design</h3>
+                        <p>Interactive 3D stage design for a major music festival with dynamic lighting simulation.</p>
+                    </div>
+                </div>
+                <div class="example-item">
+                    <div class="example-img">
+                        <i class="fas fa-home"></i>
+                        <span class="example-badge">Residential</span>
+                    </div>
+                    <div class="example-content">
+                        <h3>Luxury Apartment Complex</h3>
+                        <p>Complete 3D visualization of a high-end apartment building with interior and exterior views.</p>
+                    </div>
+                </div>
+                <div class="example-item">
+                    <div class="example-img">
+                        <i class="fas fa-archway"></i>
+                        <span class="example-badge">Podium</span>
+                    </div>
+                    <div class="example-content">
+                        <h3>Conference Center Podium</h3>
+                        <p>3D design of a modern conference podium with integrated technology and lighting.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="admin" class="container">
+        <h2 class="section-title">Administration Panel</h2>
+        <div class="admin-panel">
+            <div class="admin-header">
+                <h3>Project Management</h3>
+                <span class="admin-status"><i class="fas fa-circle" style="color: var(--success-color);"></i> Online</span>
+            </div>
+            <div class="admin-forms">
+                <div class="form-group">
+                    <label for="projectName">Project Name</label>
+                    <input type="text" id="projectName" placeholder="Enter project name">
+                </div>
+                <div class="form-group">
+                    <label for="projectType">Project Type</label>
+                    <select id="projectType">
+                        <option value="">Select project type</option>
+                        <option value="architectural">Architectural Visualization</option>
+                        <option value="product">Product Design</option>
+                        <option value="event">Event Stage</option>
+                        <option value="interior">Interior Design</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="projectDescription">Project Description</label>
+                    <textarea id="projectDescription" placeholder="Describe your project"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="projectFiles">Upload Files</label>
+                    <input type="file" id="projectFiles" multiple>
+                </div>
+                <div class="form-actions">
+                    <button class="btn" id="saveProject"><i class="fas fa-save"></i> Save Project</button>
+                    <button class="btn" style="background-color: #95a5a6;"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="file-upload">
+            <h3>3D Format Import</h3>
+            <p>We support a wide range of 3D file formats for import and conversion</p>
+            <button class="btn"><i class="fas fa-upload"></i> Upload 3D File</button>
+            <div class="format-badges">
+                <span class="format-badge">.OBJ</span>
+                <span class="format-badge">.FBX</span>
+                <span class="format-badge">.STL</span>
+                <span class="format-badge">.GLTF</span>
+                <span class="format-badge">.3DS</span>
+                <span class="format-badge">.BLEND</span>
+                <span class="format-badge">.MAX</span>
+                <span class="format-badge">.MB</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="viewer" class="viewer-mode">
+        <div class="container">
+            <h2 class="section-title">3D Viewer</h2>
+            <div class="viewer-container">
+                <div class="viewer-simulation">
+                    <div class="cube">
+                        <div class="cube-face front"><i class="fas fa-cube"></i></div>
+                        <div class="cube-face back"><i class="fas fa-cube"></i></div>
+                        <div class="cube-face right"><i class="fas fa-cube"></i></div>
+                        <div class="cube-face left"><i class="fas fa-cube"></i></div>
+                        <div class="cube-face top"><i class="fas fa-cube"></i></div>
+                        <div class="cube-face bottom"><i class="fas fa-cube"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="viewer-controls">
+                <button><i class="fas fa-play"></i> Play Flythrough</button>
+                <button><i class="fas fa-walking"></i> Start Walkthrough</button>
+                <button><i class="fas fa-compress"></i> Toggle Panorama</button>
+                <button><i class="fas fa-download"></i> Export</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="container">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="admin-panel">
+            <div class="admin-forms">
+                <div class="form-group">
+                    <label for="contactName">Your Name</label>
+                    <input type="text" id="contactName" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail">Email Address</label>
+                    <input type="email" id="contactEmail" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="contactProject">Project Type</label>
+                    <select id="contactProject">
+                        <option value="">Select project type</option>
+                        <option value="architectural">Architectural Visualization</option>
+                        <option value="product">Product Design</option>
+                        <option value="event">Event Stage</option>
+                        <option value="interior">Interior Design</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="contactMessage">Message</label>
+                    <textarea id="contactMessage" placeholder="Tell us about your project" rows="5"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="btn"><i class="fas fa-paper-plane"></i> Send Message</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>3D Professional Studio</h3>
+                <p>Creating immersive 3D experiences for architects, designers, and event planners.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Design Street, Creative City</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                <p><i class="fas fa-envelope"></i> info@3dprostudio.com</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#services">Services</a>
+                <a href="#examples">Examples</a>
+                <a href="#admin">Admin Panel</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 3D Professional Studio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const viewToggle = document.getElementById('viewToggle');
+            const body = document.body;
+            const adminSection = document.getElementById('admin');
+            const viewerSection = document.getElementById('viewer');
+            
+            let isViewerMode = false;
+            
+            viewToggle.addEventListener('click', function() {
+                isViewerMode = !isViewerMode;
+                
+                if (isViewerMode) {
+                    body.classList.add('viewer-mode');
+                    viewerSection.style.display = 'block';
+                    adminSection.style.display = 'none';
+                    viewToggle.innerHTML = '<i class="fas fa-cog"></i>Switch to Admin Mode';
+                } else {
+                    body.classList.remove('viewer-mode');
+                    viewerSection.style.display = 'none';
+                    adminSection.style.display = 'block';
+                    viewToggle.innerHTML = '<i class="fas fa-eye"></i>Switch to Viewer Mode';
+                }
+            });
+            
+            // Simulate 3D file upload
+            const uploadBtn = document.querySelector('.file-upload .btn');
+            uploadBtn.addEventListener('click', function() {
+                alert('3D file upload simulated. In a real application, this would open a file dialog and process the 3D model.');
+            });
+            
+            // Simulate project save
+            const saveBtn = document.getElementById('saveProject');
+            saveBtn.addEventListener('click', function() {
+                alert('Project saved successfully!');
+            });
+        });
+    </script>
+</body>
+</html>
